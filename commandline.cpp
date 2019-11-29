@@ -360,7 +360,7 @@ static void stdinout_raw_epilogue(int inFd, int outFd, int old_stdin_mode, int o
 }
 
 static void copy_to_file(int inFd, int outFd) {
-    const size_t BUFSIZE = 32 * 1024;
+    const size_t BUFSIZE = 64 * 1024;
     char* buf = (char*) malloc(BUFSIZE);
     if (buf == nullptr) fatal("couldn't allocate buffer for copy_to_file");
     int len;
@@ -1683,10 +1683,10 @@ int adb_commandline(int argc, const char** argv) {
         return do_sync_pull(srcs, dst, copy_attrs) ? 0 : 1;
     }
     else if (!strcmp(argv[0], "install")) {
-        if (argc < 2) return syntax_error("install requires an argument");
-        if (_use_legacy_install()) {
-            return install_app_legacy(transport_type, serial, argc, argv);
-        }
+        // if (argc < 2) return syntax_error("install requires an argument");
+        // if (_use_legacy_install()) {
+        //     return install_app_legacy(transport_type, serial, argc, argv);
+        // }
         return install_app(transport_type, serial, argc, argv);
     }
     else if (!strcmp(argv[0], "install-multiple")) {
@@ -1860,15 +1860,15 @@ static int uninstall_app(TransportType transport, const char* serial, int argc, 
 static int install_app(TransportType transport, const char* serial, int argc, const char** argv) {
     // The last argument must be the APK file
     const char* file = argv[argc - 1];
-    if (!android::base::EndsWithIgnoreCase(file, ".apk")) {
-        return syntax_error("filename doesn't end .apk: %s", file);
-    }
+    // if (!android::base::EndsWithIgnoreCase(file, ".apk")) {
+    //     return syntax_error("filename doesn't end .apk: %s", file);
+    // }
 
-    struct stat sb;
-    if (stat(file, &sb) == -1) {
-        fprintf(stderr, "adb: failed to stat %s: %s\n", file, strerror(errno));
-        return 1;
-    }
+    // struct stat sb;
+    // if (stat(file, &sb) == -1) {
+    //     fprintf(stderr, "adb: failed to stat %s: %s\n", file, strerror(errno));
+    //     return 1;
+    // }
 
     int localFd = adb_open(file, O_RDONLY);
     if (localFd < 0) {
